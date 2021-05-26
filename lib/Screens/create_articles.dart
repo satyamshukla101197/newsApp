@@ -10,6 +10,9 @@ class create_articles extends StatefulWidget {
 
 class _create_articlesState extends State<create_articles> {
   final _formKey = GlobalKey<FormState>();
+
+  String? s;
+
   final featured = TextEditingController();
   final title = TextEditingController();
   final url = TextEditingController();

@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:news_app/Screens/create_articles.dart';
+import 'package:news_app/controller/create_articles.dart';
 
 import 'Models/new_articles_Model.dart';
 
@@ -17,22 +19,15 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  List<HomeScreen> data=[];
-  Future<List<HomeScreen>> getdata()async{
-  final response=await http.get(Uri.parse("https://spaceflightnewsapi.net/api/v2/articles"));
+class _MyAppState extends StateMVC<MyApp> {
 
-  List resbody=json.decode(response.body);
-  print("jjjjjjjjjjjjjjjjjjjjjjjjjjjj");
- 
+  ControllerState? _conn;
 
-  return resbody.map((data) => HomeScreen.fromMap(data)).toList();
+
+  _MyAppState():super(ControllerState()){
+    _conn=controller as ControllerState?;
   }
-@override
-  void initState() {
-  this.getdata();
-    super.initState();
-  }
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -179,7 +174,7 @@ class _MyAppState extends State<MyApp> {
             child:Column(
               children: <Widget>[
                FutureBuilder<List<HomeScreen>>(
-                 future:getdata() ,
+                 future:_conn!.getdata(),
                  builder: (BuildContext context,AsyncSnapshot snapshot){
                     if(!snapshot.hasData){
                       return Center(
@@ -200,7 +195,6 @@ class _MyAppState extends State<MyApp> {
                                   Image(image: NetworkImage(snapshot.data[index].imageUrl)),
                                   Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01)),
                                   Text(snapshot.data[index].title,style: TextStyle(fontWeight: FontWeight.bold),),
-
                                 ],
                               ),
                             ),
